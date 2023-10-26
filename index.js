@@ -1,41 +1,37 @@
 const readline = require('readline-sync');
-function calculator() {
-  let operation = readline.question('What operation would you like to perform? (+, -, *, /) ');
-  while (!['+', '-', '*', '/'].includes(operation)) {
-    console.log('That is not a valid operation');
-    operation = readline.question('What operation would you like to perform? (+, -, *, /) ');
-  }
+const opObj = {
+  '+': (a, b) => a + b,
+  '-': (a, b) => a - b,
+  '*': (a, b) => a * b,
+  '/': (a, b) => a / b,
+}
 
-  let num1 = readline.question('Please enter the first number: ');
-  while (isNaN(num1)) {
-    console.log('This is not a number');
-    num1 = readline.question('Please enter the first number: ');
+const getOperator = (opList) => {
+  return readline.question('What operation would you like to perform? (+, -, *, /) ',
+  {
+    limit: opList,
+    limitMessage: 'This is not a valid operator!'
   }
+  ); 
+};
 
-  let num2 = readline.question('Please enter the second number: ');
-  while (isNaN(num2)) {
-    console.log('This is not a number');
-    num2 = readline.question('Please enter the second number: ');
-  }
+const getNumber = (str) => {
+  return readline.questionInt(`Please enter the ${str} number: `, {
+    limitMessage: 'This is not a valid number!',
+  }); 
+};
 
-  let result;  
-    switch (operation) {
-      case '+':
-        result = parseInt(num1) + parseInt(num2);
-        break;
-      case '-':
-        result = num1 - num2;
-        break;
-      case '*':
-        result = num1 * num2;
-        break;
-      case '/':
-        result = num1 / num2;
-        break;     
-    }
-    console.log(`The result is: ${result}`);
-  }
-calculator();
+const doMath = (opObj, operator, num1, num2) => {
+  return opObj[operator](num1, num2);
+};
+
+function calculator(opObj) {  
+  const opArr = Object.keys(opObj);
+  const operator = getOperator(opArr);
+  const [num1, num2] = ['first', 'second'].map((item) => getNumber(item));   
+  console.log(`The result is: ${doMath(opObj, operator, num1, num2)}`);
+}
+calculator(opObj);
 
 
 
